@@ -663,7 +663,7 @@ var
       s := Trim(FLines[i]);
       if pos('|',s)>0 then
       begin
-        for j:=0 to length(s) do
+        for j:=1 to length(s) do
         begin
           if copy(s,j,1)='|' then  //表格
           begin
@@ -827,7 +827,7 @@ begin
     begin
       str:='';
       col:=0;
-      for j:=0 to length(s) do
+      for j:=pos('|',s)+1 to length(s) do
       begin
         dc:=0;
         if copy(s,j,1)='|' then  //表格
@@ -1008,7 +1008,7 @@ begin
   (pos('</>',str)>0)
   then
   begin
-    i:=0;
+    i:=1;
     oldColor:=Buffer.Canvas.font.Color;
     oldStyles:=Buffer.Canvas.font.Style;
     oldFontSize:=Buffer.Canvas.font.Size;
@@ -1187,47 +1187,47 @@ begin
   begin
     for j:=0 to col-1 do
     begin
-      if FTable[i,j+1].DispType=0 then  //显示文字
+      if FTable[i,j].DispType=0 then  //显示文字
       begin
         //设置字体属性
-        if FTable[i,j+1].FontStyle=0 then Buffer.Canvas.Font.Style:=[];
-        if FTable[i,j+1].FontStyle=1 then Buffer.Canvas.Font.Style:=[fsBold];
-        if FTable[i,j+1].FontStyle=2 then Buffer.Canvas.Font.Style:=[fsStrikeOut];
-        if FTable[i,j+1].FontStyle=3 then Buffer.Canvas.Font.Style:=[fsItalic];
-        if FTable[i,j+1].FontStyle=4 then Buffer.Canvas.Font.Style:=[fsUnderline];
-        Buffer.Canvas.Font.Color:=FTable[i,j+1].Color;
+        if FTable[i,j].FontStyle=0 then Buffer.Canvas.Font.Style:=[];
+        if FTable[i,j].FontStyle=1 then Buffer.Canvas.Font.Style:=[fsBold];
+        if FTable[i,j].FontStyle=2 then Buffer.Canvas.Font.Style:=[fsStrikeOut];
+        if FTable[i,j].FontStyle=3 then Buffer.Canvas.Font.Style:=[fsItalic];
+        if FTable[i,j].FontStyle=4 then Buffer.Canvas.Font.Style:=[fsUnderline];
+        Buffer.Canvas.Font.Color:=FTable[i,j].Color;
         //设置字体属性
 
         x0:=FGapX+j*w;
         x1:=x0; //居左
-        if FTable[0,j+1].Align=1 then
+        if FTable[0,j].Align=1 then
           x1:=x0 ;//居左
-       if FTable[0,j+1].Align=2 then
-          x1:=x0+(w-GetStringTextWidth(Buffer,TruncationStr(Buffer,FTable[i,j+1].str,w))) div 2; //居中
-        if FTable[0,j+1].Align=3 then
-           x1:=x0+(w-GetStringTextWidth(Buffer,TruncationStr(Buffer,FTable[i,j+1].str,w)))-5; //居右
+       if FTable[0,j].Align=2 then
+          x1:=x0+(w-GetStringTextWidth(Buffer,TruncationStr(Buffer,FTable[i,j].str,w))) div 2; //居中
+        if FTable[0,j].Align=3 then
+           x1:=x0+(w-GetStringTextWidth(Buffer,TruncationStr(Buffer,FTable[i,j].str,w)))-5; //居右
         if i=0 then
         begin
-          x1:=x0+(w-GetStringTextWidth(Buffer,TruncationStr(Buffer,FTable[i,j+1].str,w))) div 2;//标题行文字居中
+          x1:=x0+(w-GetStringTextWidth(Buffer,TruncationStr(Buffer,FTable[i,j].str,w))) div 2;//标题行文字居中
           y0:=FOffset + y+FGapY+i*h+abs(h- th) div 2;//垂直居中
           Buffer.Canvas.Font.Style:=[fsBold];
-          Buffer.Canvas.Font.Color:=FTable[i,j+1].Color;
-          DisplayText(Buffer,x1+2, y0+5,TruncationStr(Buffer,FTable[i,j+1].str,w));//截断超过单元格宽度的字符串
+          Buffer.Canvas.Font.Color:=FTable[i,j].Color;
+          DisplayText(Buffer,x1+2, y0+5,TruncationStr(Buffer,FTable[i,j].str,w));//截断超过单元格宽度的字符串
         end
         else
         if i>1 then //跳过第2行--第2行定义单元格的对齐格式
         begin
            y0:=FOffset + y+FGapY+(i-1)*h+abs(h- th) div 2;//垂直居中
-           DisplayText(Buffer,x1+2, y0+5,TruncationStr(Buffer,FTable[i,j+1].str,w));
+           DisplayText(Buffer,x1+2, y0+5,TruncationStr(Buffer,FTable[i,j].str,w));
         end;
       end;
-      if FTable[i,j+1].DispType=1 then  //显示图形
+      if FTable[i,j].DispType=1 then  //显示图形
       begin
         x0:=FGapX+j*w+1;
         y0:=FOffset + y+FGapY+(i-1)*h+4;
-        if  FileExists(FTable[i,j+1].str) then
+        if  FileExists(FTable[i,j].str) then
         begin
-          IMG.Picture.LoadFromFile(FTable[i,j+1].str);
+          IMG.Picture.LoadFromFile(FTable[i,j].str);
           //设置图像显示位置及尺寸（单元格大小）
           r.Top:=y0;
           r.Left:=x0;
@@ -1238,7 +1238,7 @@ begin
         else
         begin
           //没找到图像文件
-          DisplayText(Buffer,x0+2, y0,TruncationStr(Buffer,'['+ExtractFileName(FTable[i,j+1].str+']'),w));
+          DisplayText(Buffer,x0+2, y0,TruncationStr(Buffer,'['+ExtractFileName(FTable[i,j].str+']'),w));
         end;
       end;
     end;
