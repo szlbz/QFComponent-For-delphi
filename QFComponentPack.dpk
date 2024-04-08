@@ -1,7 +1,6 @@
 package QFComponentPack;
 
 {$R *.res}
-{$R 'Myline.dcr'}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -26,7 +25,6 @@ package QFComponentPack;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Myline'}
 {$IMPLICITBUILD OFF}
 
 requires
